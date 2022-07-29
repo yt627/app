@@ -19,6 +19,8 @@
     import Like from '@/pages/Home/Like'
     import Floor from '@/pages/Home/Floor'
     import Brand from '@/pages/Home/Brand'
+
+    import {mapState} from 'vuex';
     export default {
         name:'',
         components:{
@@ -28,7 +30,13 @@
             Like,
             Floor,
             Brand
-        }
+        },
+        computed:{
+
+        },
+        methods:{
+            
+        },
     }
 </script>
 
