@@ -5,7 +5,7 @@ const state = {
 const mutations = {
     CATEGORYLIST(state, categoryList){
         state.categoryList = categoryList;
-        console.log(state);
+        // console.log(state);
     }
 };
 const actions = {
@@ -20,6 +20,7 @@ const actions = {
     //     reqCategoryList().then(value=>{
     //         if(value.code === 200){
     //             commit('CATEGORYLIST',value.data);
+
     //         }
     //     })
     // }

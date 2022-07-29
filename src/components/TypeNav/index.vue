@@ -3,21 +3,38 @@
         <div class="container">
             <div @mouseleave="leaveIndex">
                 <h2 class="all">全部商品分类</h2>
+                <!-- 三级联动 -->
                 <div class="sort">
-                    <div class="all-sort-list2">
+                    <!-- 3.利用事件委派+编程式导航实现路由跳转和参数传递 -->
+                    <div class="all-sort-list2" @click="goSearch">
+                        <!-- 一级分类 -->
                         <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryID">
-                            <h3  @mouseenter="changeIndex(index)" :class="{cur:currentIndex === index}">
-                                <a href="">{{c1.categoryName}}</a>
+                            <h3 @mouseenter="changeIndex(index)" :class="{cur:currentIndex === index}">
+                                <a :data-categoryName="c1.categoryName" 
+                                :data-category1Id="c1.categoryID"
+                                >{{c1.categoryName}} {{c1.categoryID}}</a
+                                >
+                                <!-- 1.声明式导航 -->
+                                <!-- <router-link to="/search">{{c1.categoryName}}</router-link> -->
                             </h3>
-                            <div class="item-list clearfix" v-for="c2 in c1.categoryChild" :key="c2.categoryID">
-                                <div class="subitem">
+                            <!-- 二级、三级分类 -->
+                            <div class="item-list clearfix" :style="{display:currentIndex===index?'block':'none'}">
+                                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryID">
                                     <dl class="fore">
                                         <dt>
-                                            <a href="">{{c2.categoryName}}</a>
+                                            <a :data-categoryName="c2.categoryName" 
+                                            :data-category2Id="c2.categoryID"
+                                            >{{c2.categoryName}}</a
+                                            >
+                                            <!-- <router-link to="/search">{{c2.categoryName}}</router-link> -->
                                         </dt>
                                         <dd>
                                             <em  v-for="c3 in c2.categoryChild" :key="c3.categoryID">
-                                                <a href="">{{c3.categoryName}}</a>
+                                                <a :data-categoryName="c3.categoryName" 
+                                                :data-category3Id="c3.categoryID"
+                                                >{{c3.categoryName}}</a
+                                                >
+                                                <!-- <router-link to="/search">{{c3.categoryName}}</router-link> -->
                                             </em>
                                         </dd>
                                     </dl>
@@ -42,7 +59,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+    // 引入mapState
+    import { mapState } from 'vuex';
+    // 引入lodash全部函数
+    // import _ from 'lodash';
+
+    // 按需引入lodash  throttle   节流函数
+    import throttle from 'lodash/throttle';
+
     export default {
         name:'TypeNav',
         data(){
@@ -60,15 +84,41 @@ import { mapState } from 'vuex'
             })
         },
         methods:{
-            changeIndex(index){
+            // changeIndex(index){
+            //     this.currentIndex = index;
+            // },
+            //  throttle函数中不要使用箭头函数，会出现上下文this
+            changeIndex:throttle(function(index){
                 this.currentIndex = index;
-            },
+            },50),
             leaveIndex(){
                 this.currentIndex = -1;
+            },
+            goSearch(event){
+                let element = event.target;
+                // console.log(element.dataset);
+                let {categoryname,category1id,category2id,category3id} = element.dataset;  
+                console.log(element.dataset);  // 小写
+                if(categoryname){
+                    let location ={name:'search',};
+                    let query = {categoryName:categoryname};
+                    if(category1id){
+                        query.category1ID = category1id;
+                    }else if(category2id){
+                        query.category2ID = category2id;
+                    }else{
+                        query.category3ID = category3id;
+                    }
+                                    // 整理完参数
+                    location.query = query;
+                    console.log(location);
+                    // 路由跳转
+                    this.$router.push(location);
+                    // console.log(location);
+                }
             }
-        }
+        },
     }
-    // console.log(categoryList)
 </script>
 
 <style lang="less" scoped> 
@@ -181,11 +231,11 @@ import { mapState } from 'vuex'
                             }
                         }
 
-                        &:hover {
-                            .item-list {
-                                display: block;
-                            }
-                        }
+                        // &:hover {
+                        //     .item-list {
+                        //         display: block;
+                        //     }
+                        // }
                     }
                     .cur {
                         background-color: skyblue;

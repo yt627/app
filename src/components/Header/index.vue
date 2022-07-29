@@ -60,7 +60,6 @@ export default {
     methods:{
         goSearch(){
             let result = this.$router.push({name:'search',params:{Keyword:this.Keyword},query:{k:this.Keyword.toUpperCase()}},()=>{},()=>{});
-            console.log(result)
         }
     }
 
