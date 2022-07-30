@@ -1,6 +1,6 @@
 <template>
     <div>
-        我是搜索{{$route.query.k}}
+        <TypeNav></TypeNav>
     </div>
 </template>
 

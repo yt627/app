@@ -38,16 +38,19 @@ VueRouter.prototype.replace = function(location,resolve,reject){
 export default new VueRouter({
     routes:[
         {
+            name:'home',
             path:"/home",
             component:Home,
             meta:{show:true}
         },
         {
+            name:'register',
             path:"/register",
             component:Register,
             meta:{show:false}
         },
         {
+            name:'login',
             path:"/login",
             component:Login,
             meta:{show:false}
