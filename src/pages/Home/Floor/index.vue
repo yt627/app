@@ -5,9 +5,9 @@
                 <div class="title clearfix">
                     <h3 class="fl">{{floor.name}}</h3>
                     <div class="fr">
-                        <ul class="nav-tabs clearfix" v-for="(navList,index) in floor.navList" :key="index">
+                        <ul class="nav-tabs clearfix" v-for="(nav,index) in floor.navList" :key="index">
                             <li class="active">
-                                <a href="#tab1" data-toggle="tab">{{navList.text}}</a>
+                                <a href="#tab1" data-toggle="tab">{{nav.text}}</a>
                             </li>
                         </ul>
                     </div>
@@ -22,17 +22,11 @@
                                 <img :src="floor.imgUrl" />
                             </div>
                             <div class="floorBanner">
-                                <div class="swiper-container" id="floor2Swiper">
+                                <div class="swiper-container" ref="floor2Swiper">
                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide" v-for="(carousel,index) in floor.carouselList" :key="index">
-                                            <img :src="carousel">
+                                        <div class="swiper-slide" v-for="(carousel,index) in floor.carouselList" :key="carousel.id">
+                                            <img :src="carousel.imgUrl">
                                         </div>
-                                        <!-- <div class="swiper-slide">
-                                            <img src="./images/floor-1-b02.png">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="./images/floor-1-b03.png">
-                                        </div> -->
                                     </div>
                                     <!-- 如果需要分页器 -->
                                     <div class="swiper-pagination"></div>
@@ -45,22 +39,22 @@
                             <div class="split">
                                 <span class="floor-x-line"></span>
                                 <div class="floor-conver-pit">
-                                    <img src="./images/floor-1-2.png" />
+                                    <img :src="floor.recommendList[0]" />
                                 </div>
                                 <div class="floor-conver-pit">
-                                    <img src="./images/floor-1-3.png" />
+                                    <img :src="floor.recommendList[1]" />
                                 </div>
                             </div>
                             <div class="split center">
-                                <img src="./images/floor-1-4.png" />
+                                <img :src="floor.bigImg" />
                             </div>
                             <div class="split">
                                 <span class="floor-x-line"></span>
                                 <div class="floor-conver-pit">
-                                    <img src="./images/floor-1-5.png" />
+                                    <img :src="floor.recommendList[2]" />
                                 </div>
                                 <div class="floor-conver-pit">
-                                    <img src="./images/floor-1-6.png" />
+                                    <img :src="floor.recommendList[3]" />
                                 </div>
                             </div>
                         </div>
@@ -71,10 +65,37 @@
 </template>
 
 <script>
-export default {
-    name:'',
-    props:['floor'],
-}
+    import Swiper from 'swiper';
+    export default {
+        name:'',
+        props:['floor'],
+        // watch:{
+        //     carousel:{
+        //         deep:true,
+        //         handler(newValue,oldValue){
+        //             this.$nextTick(()=>{
+
+        //             })
+        //         }
+        //     }
+        // },
+        mounted(){
+            var swiper = new Swiper(
+            this.$refs.floor2Swiper,
+                {
+                    loop:true,
+                    pagination:{
+                        el:'.swiper-pagination',
+                        clickable:true,
+                    },
+                    navigation:{
+                        nextEl:'.swiper-button-next',
+                        prevEl:'.swiper-button-prev'
+                    },
+                }
+            );
+        }
+    }
 </script>
 
 <style lang="less" scoped>

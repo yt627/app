@@ -35,7 +35,7 @@
                 <form action="###" class="searchForm">
                     <input type="text" id="autocomplete" 
                             class="input-error input-xxlarge"
-                            v-model="Keyword" 
+                            v-model="keyword" 
                     />
                     <!-- 编程式路由 -->
                     <button class="sui-btn btn-xlarge btn-danger" 
@@ -54,12 +54,12 @@ export default {
     name:'',
     data(){
         return{
-            Keyword:''
+            keyword:''
         }
     },
     methods:{
         goSearch(){
-            let location = {name:'search',params:{Keyword:this.Keyword || undefined}};
+            let location = {name:'search',params:{keyword:this.keyword || undefined}};
             if(this.$route.query){
                 location.query = this.$route.query;
             }

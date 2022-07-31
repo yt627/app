@@ -68,7 +68,6 @@
 
     // 按需引入lodash  throttle   节流函数
     import throttle from 'lodash/throttle';
-import { CONNECTING } from 'ws';
 
     export default {
         name:'TypeNav',
