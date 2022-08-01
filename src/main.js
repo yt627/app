@@ -13,6 +13,12 @@ import store from './store';
 
 import {reqCategoryList} from '@/api/index';
 
+// 引入mockServe.js    mock数据
+import '@/mock/mockServe'
+
+// 引入swiper样式
+import 'swiper/css/swiper.css';
+
 // 测试
 reqCategoryList();
 
