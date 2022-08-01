@@ -3,8 +3,9 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- 品牌地方 -->
         <ul class="logo-list">
-          <li v-for="trade in trademarkList" :key="trade.tmId">{{trade.tmName}}</li>
+          <li v-for="trade in trademarkList" :key="trade.tmId" @click="trademarkHandler(trade)">{{trade.tmName}}</li>
         </ul>
       </div>
       <div class="ext">
@@ -12,11 +13,14 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- 平台售卖属性的地方 -->
     <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
+    <!-- 平台售卖属性：比如颜色 -->
       <div class="fl key">{{attr.attrName}}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue,index) in attr.attrValueList" :key="index">
+            <!-- 平台相应的售卖属性的属性值：蓝色 -->
+          <li v-for="(attrValue,index) in attr.attrValueList" :key="index" @click="attrInfo(attr,attrValue)">
             <a>{{attrValue}}</a>
           </li>
         </ul>
@@ -32,6 +36,17 @@
     name: 'SearchSelector',
     computed:{
       ...mapGetters(['attrsList','trademarkList'])
+    },
+    methods:{
+        // 品牌的事件处理函数
+        trademarkHandler(trade){            
+            // 在父组件中发请求  子给父传值：自定义事件
+            this.$emit('trademarkInfo',trade);
+        },
+        // 平台售卖属性值的点击事件
+        attrInfo(attr,attrValue){
+            this.$emit('attrInfo',attr,attrValue)
+        }
     }
   }
 </script>

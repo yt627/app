@@ -12,15 +12,19 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">111</li>
-            <li class="with-x">111</li>
-            <li class="with-x">111</li>
-            <li class="with-x">111</li>
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeCategoryName">x</i></li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removekeyword">x</i></li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">{{searchParams.trademark.split(':')[1]}}<i @click="removetrademark">x</i></li>
+            <!-- 平台售卖属性的展示 -->
+            <li class="with-x" v-for="(attrValue,index) in searchParams.props" :key="index">{{attrValue.split(':')[1]}}<i @click="removeAttr(index)">x</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -117,6 +121,9 @@
   import {mapGetters} from "vuex";
   export default {
     name: 'Search',
+    components: {
+        SearchSelector
+    },
     data(){
       return {
         searchParams : {
@@ -127,7 +134,7 @@
           "keyword": "",
           "order": "",
           "pageNo": 1,
-          "pageSize":10 ,
+          "pageSize":3,
           "props": [],
           "trademark": ""
         }
@@ -144,9 +151,55 @@
       ...mapGetters(["goodsList"]),
     },
     methods:{
+        // 把发送的这个action封装到一个函数中
+        // 将来需要再次发送请求，只需要再次调用这个函数
       getData(){
-        this.$store.dispatch('getSearchList',this.searchParams);
-      }
+        this.$store.dispatch('getSearchList',this.searchParams)
+      },
+    //   删除分类的名字
+      removeCategoryName() {
+        this.searchParams.categoryName = '';
+        this.searchParams.category1Id = '';
+        this.searchParams.category2Id = '';
+        this.searchParams.category3Id = '';
+        this.getData();
+      },
+    //   删除关键字
+      removekeyword(){
+        this.searchParams.keyword = undefined;
+        this.getData();
+        this.$bus.$emit('clear');
+        // 进行路由的跳转
+        if(this.$route.query){
+            this.$router.push({'name':'search',query:this.$route.query});
+        }
+      },
+    //   删除品牌的信息
+      removetrademark(){
+        this.searchParams.trademark = '';
+        this.getData();
+      },
+      removeAttr(index){
+        this.searchParams.props.splice(index,1);
+        this.getData();
+      },
+    //   自定义事件回调
+      trademarkInfo(trade){
+        // 整理品牌字段的参数
+        this.searchParams.trademark = `${trade.tmId}:${trade.tmName}`;
+        // 再次发请求获取search模块列表数据
+        this.getData();
+      },
+    //   收集平台属性地方回调函数（自定义事件）
+        attrInfo(attr,attrValue){
+            // ["属性ID:属性值:属性名"]
+            // 参数格式整理好
+            let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+            // 数组去重
+            if(this.searchParams.props.indexOf(props)===-1) this.searchParams.props.push(props);
+            // 再次发请求
+            this.getData();
+        }
     },
     watch:{
       $route(newValue, oldValue) {
@@ -156,9 +209,6 @@
         this.searchParams.category2Id = '';
         this.searchParams.category3Id = '';
       }
-    },
-    components: {
-      SearchSelector
     },
   }
 </script>

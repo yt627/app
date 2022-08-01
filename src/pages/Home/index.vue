@@ -37,7 +37,6 @@
             )
         },
         methods:{
-  
         },
         mounted(){
             this.$store.dispatch('getFloorList');

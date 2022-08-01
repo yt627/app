@@ -264,7 +264,7 @@
                 height: 461px;
             }
             .sort-enter-active, .sort-leave-active{
-                transition: all 0.5s linear;
+                transition: all 0.1s linear;
             }
         }
     }

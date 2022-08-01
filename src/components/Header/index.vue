@@ -57,6 +57,12 @@ export default {
             keyword:''
         }
     },
+    mounted(){
+        // 通过全局事件总线清楚关键字
+        this.$bus.$on('clear',()=>{
+            this.keyword = '';
+        })
+    },
     methods:{
         goSearch(){
             let location = {name:'search',params:{keyword:this.keyword || undefined}};
