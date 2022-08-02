@@ -1,10 +1,18 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-// 三级联动 全局组件
+// 定义 全局组件
 import TypeNav from '@/components/TypeNav'
-Vue.component(TypeNav.name,TypeNav)
 
+import Pagination from '@/components/Pagination'
+
+// 全局组件 第一个参数:组件名  第二个参数:那个组件
+// TypeNav组件
+Vue.component(TypeNav.name,TypeNav)
+// 分页器组件
+Vue.component(Pagination.name,Pagination)
+
+// 关闭生产提示
 Vue.config.productionTip = false
 // 引入路由
 import router from '@/router';

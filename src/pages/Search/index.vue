@@ -31,23 +31,11 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}" @click="changeOrder(1)">
+                  <a href="#">综合<span v-show="isOne" class="iconfont" :class="{'icon-jiantou_xiangshang':isAsc,'icon-jiantou_xiangxia':isDesc}"></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:isTwo}" @click="changeOrder(2)">
+                  <a href="#">价格<span v-show="isTwo" class="iconfont" :class="{'icon-jiantou_xiangshang':isAsc,'icon-jiantou_xiangxia':isDesc}"></span></a>
                 </li>
               </ul>
             </div>
@@ -81,35 +69,7 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination :pageNo="1" :pageSize="5" :total="91" :continues="5"/>
         </div>
       </div>
     </div>
@@ -132,9 +92,10 @@
           "category3Id": "",
           "categoryName": "",
           "keyword": "",
-          "order": "",
+        //   排序：初始状态为综合/降序
+          "order":"1:desc",
           "pageNo": 1,
-          "pageSize":3,
+          "pageSize":5,
           "props": [],
           "trademark": ""
         }
@@ -149,6 +110,18 @@
     computed:{
       // getters里面是数组
       ...mapGetters(["goodsList"]),
+      isOne(){
+        return this.searchParams.order.indexOf('1')!=-1;
+      },
+      isTwo(){
+        return this.searchParams.order.indexOf('2')!=-1;
+      },
+      isAsc(){
+        return this.searchParams.order.indexOf('asc')!=-1;
+      },
+      isDesc(){
+        return this.searchParams.order.indexOf('desc')!=-1;
+      }
     },
     methods:{
         // 把发送的这个action封装到一个函数中
@@ -191,15 +164,30 @@
         this.getData();
       },
     //   收集平台属性地方回调函数（自定义事件）
-        attrInfo(attr,attrValue){
-            // ["属性ID:属性值:属性名"]
-            // 参数格式整理好
-            let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
-            // 数组去重
-            if(this.searchParams.props.indexOf(props)===-1) this.searchParams.props.push(props);
-            // 再次发请求
-            this.getData();
+    attrInfo(attr,attrValue){
+        // ["属性ID:属性值:属性名"]
+        // 参数格式整理好
+        let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+        // 数组去重
+        if(this.searchParams.props.indexOf(props)==-1) this.searchParams.props.push(props);
+        // 再次发请求
+        this.getData();
+    },
+    changeOrder(flag){
+        let originFlag = this.searchParams.order.split(':')[0];
+        let originSort = this.searchParams.order.split(':')[1];
+        let newOrder = "";
+        // 点击的是综合
+        if(flag == originFlag){
+            newOrder = `${originFlag}:${originSort=="desc"?"asc":"desc"}`;
+        }else{
+            // 点击的是价格
+            newOrder =`${flag}:'desc'`
         }
+        // 
+        this.searchParams.order = newOrder;
+        this.getData();
+    }
     },
     watch:{
       $route(newValue, oldValue) {
