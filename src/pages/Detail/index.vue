@@ -63,31 +63,17 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl v-for="spuSaleAttrList">
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
+              <dl v-for="spuSaleAttr in spuSaleAttrList" :key="spuSaleAttr.id">
+                <dt class="title">{{spuSaleAttr.saleAttrName}}</dt>
+                <dd changepirce="0" 
+                :class="{active:attrValue.isChecked == 1}" v-for="attrValue in spuSaleAttr.spuSaleAttrValueList" 
+                :key="attrValue.id"
+                @click="changeActive(attrValue,spuSaleAttr.spuSaleAttrValueList)"
+                >
+                {{attrValue.saleAttrValueName}}
+                </dd>
               </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
-              </dl>
-            </div>
+              </div>
             <div class="cartWrap">
               <div class="controls">
                 <input autocomplete="off" class="itxt">
@@ -363,6 +349,15 @@
         skuImageList(){
             return this.skuInfo.skuImageList || [];
         }
+    },
+    methods:{
+      // 排他思想
+      changeActive(attrValue, attr){
+        attr.forEach(element => {
+          element.isChecked = 0;
+        });
+        attrValue.isChecked = 1;
+      }
     }
   }
 </script>

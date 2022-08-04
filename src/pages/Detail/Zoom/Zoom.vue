@@ -12,11 +12,21 @@
 <script>
   export default {
     name: "Zoom",
+    data(){
+      return {
+        currentIndex: 0,
+      }
+    },
     props:['skuImageList'],
     computed:{
         imgObj(){
-            return this.skuImageList[0] || {}
+            return this.skuImageList[this.currentIndex] || {}
         }
+    },
+    mounted(){
+      this.$bus.$on('getIndex',(index)=>{
+        this.currentIndex = index;
+      })
     }
   }
 </script>
