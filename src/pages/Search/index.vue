@@ -46,7 +46,10 @@
               <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"><img :src="good.defaultImg" /></a>
+                    <!-- 在路由跳转时别忘了带params参数 跳转到detail组件 -->
+                    <router-link :to="`/detail/${good.id}`">
+                        <img :src="good.defaultImg" />
+                    </router-link>                                              
                   </div>
                   <div class="price">
                     <strong>
@@ -69,7 +72,7 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <Pagination :pageNo="1" :pageSize="5" :total="91" :continues="5"/>
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"/>
         </div>
       </div>
     </div>
@@ -78,7 +81,7 @@
 
 <script>
   import SearchSelector from './SearchSelector/SearchSelector';
-  import {mapGetters} from "vuex";
+  import {mapGetters,mapState} from "vuex";
   export default {
     name: 'Search',
     components: {
@@ -110,6 +113,9 @@
     computed:{
       // getters里面是数组
       ...mapGetters(["goodsList"]),
+      ...mapState({
+        total:state=>state.search.searchList.total
+      }),
       isOne(){
         return this.searchParams.order.indexOf('1')!=-1;
       },
@@ -123,80 +129,87 @@
         return this.searchParams.order.indexOf('desc')!=-1;
       }
     },
-    methods:{
+    methods: {
         // 把发送的这个action封装到一个函数中
         // 将来需要再次发送请求，只需要再次调用这个函数
-      getData(){
-        this.$store.dispatch('getSearchList',this.searchParams)
-      },
-    //   删除分类的名字
-      removeCategoryName() {
-        this.searchParams.categoryName = '';
-        this.searchParams.category1Id = '';
-        this.searchParams.category2Id = '';
-        this.searchParams.category3Id = '';
-        this.getData();
-      },
-    //   删除关键字
-      removekeyword(){
-        this.searchParams.keyword = undefined;
-        this.getData();
-        this.$bus.$emit('clear');
-        // 进行路由的跳转
-        if(this.$route.query){
-            this.$router.push({'name':'search',query:this.$route.query});
+        getData() {
+            this.$store.dispatch('getSearchList', this.searchParams)
+        },
+        //   删除分类的名字
+        removeCategoryName() {
+            this.searchParams.categoryName = '';
+            this.searchParams.category1Id = '';
+            this.searchParams.category2Id = '';
+            this.searchParams.category3Id = '';
+            this.getData();
+        },
+        //   删除关键字
+        removekeyword() {
+            this.searchParams.keyword = undefined;
+            this.getData();
+            this.$bus.$emit('clear');
+            // 进行路由的跳转
+            if (this.$route.query) {
+                this.$router.push({ 'name': 'search', query: this.$route.query });
+            }
+        },
+        //   删除品牌的信息
+        removetrademark() {
+            this.searchParams.trademark = '';
+            this.getData();
+        },
+        removeAttr(index) {
+            this.searchParams.props.splice(index, 1);
+            this.getData();
+        },
+        //   自定义事件回调
+        trademarkInfo(trade) {
+            // 整理品牌字段的参数
+            this.searchParams.trademark = `${trade.tmId}:${trade.tmName}`;
+            // 再次发请求获取search模块列表数据
+            this.getData();
+        },
+        //   收集平台属性地方回调函数（自定义事件）
+        attrInfo(attr, attrValue) {
+            // ["属性ID:属性值:属性名"]
+            // 参数格式整理好
+            let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+            // 数组去重
+            if (this.searchParams.props.indexOf(props) == -1) this.searchParams.props.push(props);
+            // 再次发请求
+            this.getData();
+        },
+        changeOrder(flag) {
+            let originFlag = this.searchParams.order.split(':')[0];
+            let originSort = this.searchParams.order.split(':')[1];
+            let newOrder = "";
+            // 点击的是综合
+            if (flag == originFlag) {
+                newOrder = `${originFlag}:${originSort == "desc" ? "asc" : "desc"}`;
+            } else {
+                // 点击的是价格
+                newOrder = `${flag}:'desc'`
+            }
+            // 
+            this.searchParams.order = newOrder;
+            this.getData();
+        },
+        // 自定义事件：获取当前第几页
+        getPageNo(pageNo){
+            // 整理参数
+            this.searchParams.pageNo = pageNo;
+            // 再次发请求
+            this.getData();
         }
-      },
-    //   删除品牌的信息
-      removetrademark(){
-        this.searchParams.trademark = '';
-        this.getData();
-      },
-      removeAttr(index){
-        this.searchParams.props.splice(index,1);
-        this.getData();
-      },
-    //   自定义事件回调
-      trademarkInfo(trade){
-        // 整理品牌字段的参数
-        this.searchParams.trademark = `${trade.tmId}:${trade.tmName}`;
-        // 再次发请求获取search模块列表数据
-        this.getData();
-      },
-    //   收集平台属性地方回调函数（自定义事件）
-    attrInfo(attr,attrValue){
-        // ["属性ID:属性值:属性名"]
-        // 参数格式整理好
-        let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
-        // 数组去重
-        if(this.searchParams.props.indexOf(props)==-1) this.searchParams.props.push(props);
-        // 再次发请求
-        this.getData();
     },
-    changeOrder(flag){
-        let originFlag = this.searchParams.order.split(':')[0];
-        let originSort = this.searchParams.order.split(':')[1];
-        let newOrder = "";
-        // 点击的是综合
-        if(flag == originFlag){
-            newOrder = `${originFlag}:${originSort=="desc"?"asc":"desc"}`;
-        }else{
-            // 点击的是价格
-            newOrder =`${flag}:'desc'`
+        watch:{
+        $route(newValue, oldValue) {
+            Object.assign(this.searchParams, this.$route.params, this.$route.query);
+            this.getData();
+            this.searchParams.category1Id = '';
+            this.searchParams.category2Id = '';
+            this.searchParams.category3Id = '';
         }
-        // 
-        this.searchParams.order = newOrder;
-        this.getData();
-    }
-    },
-    watch:{
-      $route(newValue, oldValue) {
-        Object.assign(this.searchParams, this.$route.params, this.$route.query);
-        this.getData();
-        this.searchParams.category1Id = '';
-        this.searchParams.category2Id = '';
-        this.searchParams.category3Id = '';
-      }
     },
   }
 </script>

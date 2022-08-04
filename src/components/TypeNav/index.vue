@@ -1,8 +1,8 @@
 <template>
     <div class="type-nav">
         <div class="container">
-            <div @mouseleave="leaveShow" @mouseenter="enterShow">
-                <h2 class="all">全部商品分类</h2>
+            <div @mouseleave="leaveShow">
+                <h2 class="all" @mouseenter="enterShow">全部商品分类</h2>
                 <!-- 三级联动 -->
                 <transition name="sort">
                     <div class="sort" v-show="show">
@@ -79,8 +79,8 @@
         },
         mounted(){
             this.$store.dispatch('categoryList');
-            // 判断是不是在search组件中，是的话就商品分类列表（sort）隐藏
-            if(this.$route.name==='search'){
+            // 判断是不是在home组件中，不在的话商品分类列表（sort）隐藏
+            if(this.$route.path!='/home'){
                 this.show = false;
             }
         },
@@ -122,13 +122,13 @@
                 }
             },
             enterShow(){
-                if(this.$route.name==='search'){
+                if(this.$route.path!='/home'){
                     this.show = true;
                 }
             },
             leaveShow(){
                 this.currentIndex = -1;
-                if(this.$route.name==='search'){
+                if(this.$route.path!='/home'){
                     this.show = false;
                 }
             }

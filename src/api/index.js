@@ -16,3 +16,6 @@ export const reqGetFloors = ()=>mockRequests.get('/floors');
 // 获取搜索模块数据 地址：/api/list   请求方式：post   参数
 // params至少是一个空对象
 export const reqGetSearchInfo = (params) => requests({url:'/list',method:'post',data:params})
+
+// 获取产品详细信息接口
+export const reqGoodsInfo = (skuId)=>requests({url:`/item/${skuId}`,method:'get'})

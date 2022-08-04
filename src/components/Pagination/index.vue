@@ -1,18 +1,14 @@
 <template>
   <div class="pagination">
-    <button>上一页</button>
-    <button>1</button>
-    <button>···</button>
+    <button :disabled="pageNo==1" @click="$emit('getPageNo',pageNo - 1)">上一页</button>
+    <button v-if="startNumAndEndNum.start > 1" @click="$emit('getPageNo',1)">1</button>
+    <button v-if="startNumAndEndNum.start > 2">···</button>
 
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>6</button>
-    <button>7</button>
+    <button :class="{active:pageNo==page}" v-for="(page,index) in startNumAndEndNum.end" :key="index" v-if="page >= startNumAndEndNum.start" @click="$emit('getPageNo',page)">{{page}}</button>
     
-    <button>···</button>
-    <button>{{totalPage}}</button>
-    <button>下一页</button>
+    <button v-if="startNumAndEndNum.end < totalPage - 1">···</button>
+    <button v-if="startNumAndEndNum.end < totalPage" @click="$emit('getPageNo',totalPage)">{{totalPage}}</button>
+    <button :disabled="pageNo==totalPage" @click="$emit('getPageNo',pageNo + 1)">下一页</button>
     
     <button style="margin-left: 30px">共{{ total }}条</button>
   </div>
@@ -22,14 +18,19 @@
   export default {
     name: "Pagination",
     props:['pageNo','pageSize','total','continues'],
+    mounted(){
+
+    },
     computed:{
         // 计算总共多少页
         totalPage(){
             return Math.ceil(this.total/this.pageSize);
         },
+        // 重点：计算起始页数和终止页数
         startNumAndEndNum(){
+            const {continues,pageNo,totalPage} = this;
             // 定义两个变量存储起始数字和结束数字
-            let start = 0, end = o;
+            let start = 0, end = 0;
             // 连续页码数字5[至少5页],
             if(continues > totalPage){
                 start = 1;
@@ -37,8 +38,19 @@
             }else{
                 // 正常现象
                 start = pageNo - parseInt(continues/2);
-                end = pageNo - parseInt(continues/2);
+                end = pageNo + parseInt(continues/2);
+                // 
+                if(start < 1){
+                    start = 1;
+                    end = continues;
+                }
+                // 
+                if(end > totalPage){
+                    end = totalPage;
+                    start = totalPage-continues + 1;
+                }
             }
+            return {start,end}
         }
     }
   }
