@@ -4,7 +4,21 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Search from '@/pages/Search';
 import Detail from '@/pages/Detail'
+import AddCartSucess from '@/pages/AddCartSuccess'
+import ShopCart from '@/pages/ShopCart'
 export default [
+    {
+        name:"shopcart",
+        path:"/shopcart",
+        component:ShopCart,
+        meta:{show:true}
+    },
+    {
+        name:"addcartsucess",
+        path:"/addcartsucess",
+        component:AddCartSucess,
+        meta:{show:true}
+    },
     {
         name:'detail',
         path:"/detail/:skuId",

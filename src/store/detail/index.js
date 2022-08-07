@@ -1,6 +1,8 @@
-import { reqGoodsInfo } from "@/api" ;
+import { reqGoodsInfo, reqAddOrUpdateShopCar } from "@/api" ;
+import {get_UUID} from '@/utils/uuid_token'
 const state = {
     goodInfo:{},
+    uuid_token:get_UUID()
 };
 const mutations = {
     GETGOODINFO(state, goodInfo){
@@ -12,6 +14,15 @@ const actions = {
         let result = await reqGoodsInfo(skuId)
         if(result.code == 200){
             commit('GETGOODINFO', result.data)
+        }
+    },
+    async addOrUpdateShopCar({commmit}, {skuId,skuNum}){
+        let result = await reqAddOrUpdateShopCar(skuId,skuNum);
+        // 只是将数据给服务器，服务器并没有返回数据，不需要存储数据
+        if(result.code == 200){
+            return "OK"
+        }else{
+            return Promise.reject(new Error("faile"))
         }
     }
 };

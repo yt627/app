@@ -1,11 +1,11 @@
 <template>
   <div class="spec-preview">
-    <img :src="imgObj.imgUrl" />
-    <div class="event"></div>
+    <img :src="imgObj.imgUrl"/>
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img :src="imgObj.imgUrl" />
+      <img :src="imgObj.imgUrl" ref="big"/>
     </div>
-    <div class="mask"></div>
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
@@ -27,6 +27,25 @@
       this.$bus.$on('getIndex',(index)=>{
         this.currentIndex = index;
       })
+    },
+    methods:{
+      handler(event){
+        let mask = this.$refs.mask;
+        let big = this.$refs.big;
+        let left = event.offsetX - mask.offsetWidth/2; 
+        let top = event.offsetY - mask.offsetHeight/2; 
+        // 约束范围
+        if(left < 0) left = 0;
+        if(left > mask.offsetHeight) left = mask.offsetHeight;
+        if(top < 0) top = 0;
+        if(top > mask.offsetHeight) top = mask.offsetHeight;
+
+        mask.style.left = left + 'px';
+        mask.style.top = top + 'px';
+
+        big.style.left = -2*left + 'px';
+        big.style.top = -2*top + 'px';
+      }
     }
   }
 </script>
