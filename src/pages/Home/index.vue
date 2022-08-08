@@ -41,12 +41,6 @@
         async mounted(){
             // 派发actions，获取floors组件数据
             this.$store.dispatch('getFloorList');
-            // 获取用户信息在首页展示
-            try {
-                await this.$store.dispatch('getUserInfo');
-            } catch (error) {
-                alert(error.message)
-            }
         }
     }
 </script>
