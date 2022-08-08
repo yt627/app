@@ -6,7 +6,14 @@ import Search from '@/pages/Search';
 import Detail from '@/pages/Detail'
 import AddCartSucess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
+import Trade from '@/pages/Trade'
 export default [
+    {
+        name:"trade",
+        path:"/trade",
+        component:Trade,
+        meta:{show:true}
+    },
     {
         name:"shopcart",
         path:"/shopcart",
