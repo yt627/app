@@ -24,6 +24,10 @@ requests.interceptors.request.use((config)=>{
     if(store.state.detail.uuid_token){
         config.headers.userTempId = store.state.detail.uuid_token;
     }
+    // 需要携带token带给服务器
+    if(store.state.user.token){
+        config.headers.token = store.state.user.token;
+    }
     // config:配置对象，对象里面有一个属性很重要，headers请求头
     // 进度条开始
     nprogress.start();
