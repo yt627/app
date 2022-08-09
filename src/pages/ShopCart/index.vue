@@ -26,7 +26,6 @@
             <a href="javascript:void(0)" class="mins" @click="handler('minus',-1,cart)">-</a>
             <input autocomplete="off" 
             type="text" 
-            value="1" 
             minnum="1" class="itxt" 
             :value="cart.skuNum" 
             @change="handler('change',$event.target.value*1,cart)"
@@ -63,8 +62,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <!-- <a class="sum-btn" href="###" target="_blank" @click="$router.push('/trade')">结算</a> -->
-          <router-link class="sum-btn" to="/trade" ></router-link>
+          <router-link class="sum-btn" to="/trade" >结算</router-link>
         </div>
       </div>
     </div>

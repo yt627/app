@@ -53,3 +53,15 @@ export const reqAddressInfo = ()=>requests({url:'/user/userAddress/auth/findUser
 
 // 获取商品清单
 export const reqOrderInfo = ()=>requests({url:'/order/auth/trade',method:'get'});
+
+// 提交订单的接口
+export const reqSubmitOrder = (tradeNo,data)=>requests({url:`/order/auth/submitOrder?tradeNo=${tradeNo}`,data,method:'post'});
+
+// 获取支付信息
+export const reqPayInfo = (orderId)=>requests({url:`/payment/weixin/createNative/${orderId}`,method:'get'});
+
+// 获取支付订单状态
+export const reqPayStatus = (orderId)=>requests({url:`/payment/weixin/queryPayStatus/${orderId}`,method:'get'});
+
+// 获取我的订单列表
+export const reqMyOrderList = (page,limit)=>requests({url:`/order/auth/${page}/${limit}`,method:'get'});

@@ -180,7 +180,7 @@
                 .all-sort-list2 {
                     .item {
                         h3 {
-                            line-height: 28px;
+                            line-height: 27px;
                             font-size: 14px;
                             font-weight: 400;
                             overflow: hidden;

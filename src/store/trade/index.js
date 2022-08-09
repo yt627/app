@@ -24,7 +24,6 @@ const actions = {
     // 获取商品清单的数据
     async getOrderInfo({commit}){
         let result = await reqOrderInfo();
-        console.log(result)
         if(result.code == 200){
             commit('GETORDERINFO',result.data)
         }

@@ -48,7 +48,7 @@
                   <div class="p-img">
                     <!-- 在路由跳转时别忘了带params参数 跳转到detail组件 -->
                     <router-link :to="`/detail/${good.id}`">
-                        <img :src="good.defaultImg" />
+                        <img v-lazy="good.defaultImg" />
                     </router-link>                                              
                   </div>
                   <div class="price">
@@ -58,7 +58,12 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">{{good.title}}</a>
+                    <a target="_blank" 
+                    href="item.html" 
+                    title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
+                    >
+                    {{good.title}}
+                    </a>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -72,7 +77,11 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"/>
+          <Pagination 
+          :pageNo="searchParams.pageNo" 
+          :pageSize="searchParams.pageSize" 
+          :total="total" :continues="5" 
+          @getPageNo="getPageNo"/>
         </div>
       </div>
     </div>
